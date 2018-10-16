@@ -1,9 +1,6 @@
 package com.qa.OnlinePaint;
 
 
-
-import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +19,7 @@ public class OnlinePaintMouseInteraction {
 	
 	@Before
 	public void setup() {
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Admin\\Desktop\\chromedriver_win32\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		System.out.println("Setted up a chrome web driver from C:\\\\Users\\\\Admin\\\\Desktop\\\\chromedriver_win32\\\\chromedriver.exe");
 		
 		driver = new ChromeDriver();
