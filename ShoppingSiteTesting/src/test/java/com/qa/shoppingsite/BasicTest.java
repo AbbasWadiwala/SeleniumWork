@@ -50,18 +50,18 @@ public class BasicTest {
 		
 		
 	    	    
-	    WebElement partialLinkTextDress = driver.findElement(By.xpath("//*[@id=\"center_column\"]/ul"));
-	    partialLinkTextDress = partialLinkTextDress.findElement(By.partialLinkText("Dress"));
-	    stringPlaceHolder = partialLinkTextDress.getText();
-	    boolean bContainsDress = stringPlaceHolder.contains("Dress");
+	    WebElement linkTextDress = driver.findElement(By.xpath("//*[@id=\"center_column\"]/ul"));
+	    linkTextDress = linkTextDress.findElement(By.linkText("Printed Summer Dress"));
+	    stringPlaceHolder = linkTextDress.getText();
+	    boolean bContainsDress = stringPlaceHolder.equals("Printed Summer Dress");
 	  
-	    assertTrue("Checking if the word Dress was found in a partialLinkText", bContainsDress);
+	    assertTrue("Checking if the Printed Summer Dress was found in a linkText Element's text", bContainsDress);
 	    
-	    WebElement spanCounterForSearches = driver.findElement(By.className("heading-counter"));
+	   /* WebElement spanCounterForSearches = driver.findElement(By.className("heading-counter"));
 	    stringPlaceHolder = spanCounterForSearches.getText();
 	    Boolean bContainsZero = stringPlaceHolder.contains("0");
 	    
-	    assertFalse("Checking if the text inside span under class=\"heading-counter\" doesn't contain 0, meaning there were results found for dress", bContainsZero);
+	    assertFalse("Checking if the text inside span under class=\"heading-counter\" doesn't contain 0, meaning there were results found for dress", bContainsZero);*/
 	    		
 	    		
 	} 

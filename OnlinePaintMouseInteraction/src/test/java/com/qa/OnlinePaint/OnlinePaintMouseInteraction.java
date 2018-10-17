@@ -3,6 +3,8 @@ package com.qa.OnlinePaint;
 
 
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,15 +52,15 @@ public class OnlinePaintMouseInteraction {
 		    driver.findElement(By.id("lst-ib")).sendKeys(Keys.ENTER);
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Web results'])[1]/following::h3[1]")).click();
 		    
-		    Thread.sleep(500);
+		    driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);	
 		    
 		    driver.findElement(By.id("brush")).click();
-		    Thread.sleep(500);		    
+		       
 		    driver.findElement(By.id("color")).click();
-		    Thread.sleep(500);
+		    
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Pattern'])[1]/following::div[6]")).click();
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Pattern'])[1]/following::div[4]")).click();
-		    Thread.sleep(500);
+		    
 		    
 		    WebElement paintingSurface = driver.findElement(By.id("catch"));
 		    
@@ -81,26 +83,24 @@ public class OnlinePaintMouseInteraction {
 		    moveByOffset(-paintingSurfaceWidth+40, 0).moveByOffset(0, -paintingSurfaceHeight+40)
 		    .release().perform();
 		    
-		    Thread.sleep(500);
+		    
+		    
+		    
+		    
+		    /*driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Sign In'])[1]/following::div[77]")).click();		    
+		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='â–¼'])[1]/following::span[3]")).click();		    
+		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='â–¼'])[1]/following::span[3]")).click();*/    
+		    
 		    
 		    driver.findElement(By.id("btnBrush")).click();
-		    Thread.sleep(500);
+		    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);	
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Sign In'])[1]/following::div[77]")).click();
-		    Thread.sleep(500);
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='▼'])[1]/following::span[3]")).click();
-		    Thread.sleep(500);
 		    driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='▼'])[1]/following::span[3]")).click();
-		    Thread.sleep(500);
-		    driver.findElement(By.id("edSize")).sendKeys(Keys.ENTER);
-		    Thread.sleep(500);
-		    driver.findElement(By.id("edSize")).clear();
-		    Thread.sleep(500);
-		    driver.findElement(By.id("edSize")).sendKeys("36");		    
-		    Thread.sleep(500);
-		    
 		    
 		    
 		    action.moveToElement(paintingSurface);
+		    Thread.sleep(1000);
 		    action.moveByOffset(-(paintingSurfaceWidth/2)+300, -(paintingSurfaceHeight/2)+250).clickAndHold().moveByOffset(0, 100).release().perform();
 		    action.moveByOffset(0,-100).clickAndHold().moveByOffset(50, 0).release().perform();
 		    action.clickAndHold().moveByOffset(0, 100).release().perform();
