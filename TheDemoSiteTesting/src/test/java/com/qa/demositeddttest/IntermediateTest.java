@@ -32,24 +32,19 @@ public class IntermediateTest {
 	static ExtentReports extentReportRef;
 	static ExtentTest extentTestRef;
 	static ExtentTest extentTestRef2;
-	public static FileInputStream fileInputStream = null;
-	public static XSSFWorkbook workBook = null;
-	public static XSSFSheet sheet = null;
+	
 	
 	@BeforeClass
 	public static void beforeClass() {
 		// Initialise ExtentReports with a file path 
 		extentReportRef = new ExtentReports(Constant.testReportFilePathString, replaceExistingBoolean);	
-		try {
-			fileInputStream = new FileInputStream(Constant.Path_TestData + Constant.FileName_TestData);
-			workBook = new XSSFWorkbook(fileInputStream);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}catch (IOException e) {
-			e.printStackTrace();
+		ExcelUtils.setExcelFile(Constant.Path_TestData+Constant.FileName_TestData, 0);
+		
+		for(int i = 1; i < ExcelUtils.getExcelWSheet().getPhysicalNumberOfRows(); i++) {
+			 ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, "Test Not Completed", i, 3);
+			 ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, "Test Not Completed", i, 4);
 		}
 		
-		sheet = workBook.getSheetAt(0);
 	}
 	
 	@Before
@@ -93,20 +88,14 @@ public class IntermediateTest {
 	@Test
 	public void createNewUserThenLoginTest() throws InterruptedException {	
 		
-		// Initialise start the test
-		extentTestRef = extentReportRef.startTest("Verify Create User And Login");
-		// add a note to the test
-		extentTestRef.log(LogStatus.INFO, "Browser started");			
-		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);	
-		for(int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
+		
+		for(int i = 1; i < ExcelUtils.getExcelWSheet().getPhysicalNumberOfRows(); i++) {
 			
-			Cell username = sheet.getRow(i).getCell(0);
-			Cell password = sheet.getRow(i).getCell(1);
-			Cell expectedResult = sheet.getRow(i).getCell(2);
-			
-			String userString = username.getStringCellValue();
-			String passString = password.getStringCellValue();
-			String expectedResultString = expectedResult.getStringCellValue();
+			// Initialise start the test
+			extentTestRef = extentReportRef.startTest("Verify Create User And Login Test: " + i);
+			// add a note to the test
+			extentTestRef.log(LogStatus.INFO, "Browser started");			
+			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);	
 			
 			driver.manage().window().maximize();
 						
@@ -130,27 +119,32 @@ public class IntermediateTest {
 			DemoSiteAddAUserPage addUserPage = PageFactory.initElements(driver, DemoSiteAddAUserPage.class);
 			DemoSiteLoginPage  loginPage = PageFactory.initElements(driver, DemoSiteLoginPage.class);
 			
-			addUserPage.addUser(userString, passString);
+			addUserPage.addUser(ExcelUtils.getCellData(i, 0), ExcelUtils.getCellData(i, 1));
 			
-		    extentTestRef.log(LogStatus.INFO, "New User Details Entered And submitted - User: " + userString + ", Password: " + passString);
+		    extentTestRef.log(LogStatus.INFO, "New User Details Entered And submitted - User: " + ExcelUtils.getCellData(i, 0) + ", Password: " + ExcelUtils.getCellData(i, 1));
 		    
 		    addUserPage.goToLoginPage();
 		    
 		    extentTestRef.log(LogStatus.INFO, "Opened Login Page");
 		    
-		    loginPage.login(userString, passString);
+		    loginPage.login(ExcelUtils.getCellData(i, 0), ExcelUtils.getCellData(i, 1));
 		    
-		    extentTestRef.log(LogStatus.INFO, "User Details Entered And Login Attempted - User: " + userString + ", Password: " + passString);
+		    extentTestRef.log(LogStatus.INFO, "User Details Entered And Login Attempted - User: " + ExcelUtils.getCellData(i, 0) + ", Password: " + ExcelUtils.getCellData(i, 1));
 		    
-		    if(loginPage.getLoginStatus().equals(expectedResultString)) {
-		    	// report the test as a pass
-		    	extentTestRef.log(LogStatus.PASS, "Login Was Successful");
-		    }
-		    else {
+		    if(!loginPage.getLoginStatus().equals(ExcelUtils.getCellData(i, 2))) {		    
 		    	extentTestRef.log(LogStatus.FAIL, "Login Failed");
+		    	extentReportRef.endTest(extentTestRef);
+		    	extentReportRef.flush();
+		    	ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, loginPage.getLoginStatus(), i, 3);
+		    	ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, "Failed", i, 4);
 		    }
+		    
+		    assertEquals("Tested Creating New User And Then Logging In",ExcelUtils.getCellData(i, 2), loginPage.getLoginStatus());	
+		    ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, loginPage.getLoginStatus(), i, 3);
+	    	ExcelUtils.setCellData(Constant.Path_TestData+Constant.FileName_TestData, "Passed", i, 4);
+		    // report the test as a pass
+	    	extentTestRef.log(LogStatus.PASS, "Login Was Successful");
 		    extentReportRef.endTest(extentTestRef);
-		    assertEquals("Tested Creating New User And  Then Logging In",expectedResultString, loginPage.getLoginStatus());	    
 			
 		}
 		
@@ -167,7 +161,7 @@ public class IntermediateTest {
 	
 	@AfterClass
 	public static void afterClass() {
-		extentReportRef.flush();
+		extentReportRef.flush();	
 	}
 	
 	
